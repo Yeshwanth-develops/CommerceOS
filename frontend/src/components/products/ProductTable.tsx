@@ -6,6 +6,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import BuyButton from "@/components/products/BuyButton";
 
 export type Product = {
     id: number;
@@ -20,8 +21,10 @@ export type Product = {
 
 export default function ProductTable({
     products,
+    onProductUpdated,
 }: {
     products: Product[];
+    onProductUpdated?: () => void;
 }) {
     const getStatusBadge = (status?: string) => {
         if (!status) return null;
@@ -54,7 +57,8 @@ export default function ProductTable({
                         <TableHead>Product</TableHead>
                         <TableHead>Price</TableHead>
                         <TableHead>Stock</TableHead>
-                        <TableHead>Inventory Status</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Action</TableHead>
                     </TableRow>
                 </TableHeader>
 
@@ -62,7 +66,7 @@ export default function ProductTable({
                     {products.length === 0 ? (
                         <TableRow>
                             <TableCell
-                                colSpan={5}
+                                colSpan={6}
                                 className="text-center py-8 text-zinc-500"
                             >
                                 No products found.
@@ -90,6 +94,15 @@ export default function ProductTable({
                                 </TableCell>
                                 <TableCell>
                                     {getStatusBadge(product.inventory_status)}
+                                </TableCell>
+                                <TableCell className="text-right">
+                                    <BuyButton
+                                        productId={product.id}
+                                        merchantId={product.merchant_id || 1}
+                                        title={product.title}
+                                        stock={product.stock}
+                                        onPaymentSuccess={onProductUpdated}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ))

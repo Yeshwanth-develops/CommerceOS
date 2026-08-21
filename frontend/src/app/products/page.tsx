@@ -12,9 +12,10 @@ export default function ProductsPage() {
     const fetchProducts = useCallback(async (query: string = "") => {
         try {
             setLoading(true);
+            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
             const url = query
-                ? `http://localhost:8000/products/?search=${encodeURIComponent(query)}`
-                : "http://localhost:8000/products/";
+                ? `${baseUrl}/products/?search=${encodeURIComponent(query)}`
+                : `${baseUrl}/products/`;
             const res = await fetch(url);
             if (!res.ok) throw new Error("Failed to fetch products");
             const data = await res.json();
@@ -68,7 +69,10 @@ export default function ProductsPage() {
                                 Loading products...
                             </div>
                         ) : (
-                            <ProductTable products={products} />
+                            <ProductTable
+                                products={products}
+                                onProductUpdated={() => fetchProducts(search)}
+                            />
                         )}
                     </div>
                 </div>
