@@ -1,12 +1,9 @@
-from sqlalchemy import Column
-from sqlalchemy import Integer
-from sqlalchemy import String
-
+from sqlalchemy import Column, Integer, String
 from app.db.base import Base
 
 class Merchant(Base):
     __tablename__ = "merchants"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    email = Column(String)
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    email = Column(String, unique=True)
