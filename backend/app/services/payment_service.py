@@ -5,6 +5,8 @@ from app.models.product import Product
 from app.schemas.payment import PaymentVerificationRequest
 from app.services.razorpay_service import verify_payment_signature
 from app.constants.order_status import OrderStatus
+from app.services.audit_service import create_audit_event
+from app.constants.events import Events
 
 
 def verify_payment(
@@ -38,4 +40,13 @@ def verify_payment(
         product.stock = max(0, product.stock - order.quantity)
 
     db.commit()
+
+    create_audit_event(
+        db=db,
+        event_type=Events.PAYMENT_VERIFIED,
+        entity_type="ORDER",
+        entity_id=order.id,
+        description=f"Payment verified for order #{order.id} (Razorpay ID: {payment_data.razorpay_order_id})",
+    )
+
     return True

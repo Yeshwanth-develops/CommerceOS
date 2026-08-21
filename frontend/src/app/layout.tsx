@@ -49,6 +49,9 @@ export default function RootLayout({
                 <Link href="/orders" className="hover:text-black dark:hover:text-white transition">
                   Orders
                 </Link>
+                <Link href="/audit" className="hover:text-black dark:hover:text-white transition">
+                  Audit Trail
+                </Link>
               </nav>
             </div>
             <div className="flex items-center gap-2 text-xs text-zinc-500">

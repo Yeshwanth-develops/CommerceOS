@@ -6,6 +6,8 @@ from app.models.merchant import Merchant
 from app.models.product import Product
 from app.schemas.order import OrderCreate, PaymentVerifyRequest
 from app.services.razorpay_service import create_razorpay_order, verify_razorpay_signature
+from app.services.audit_service import create_audit_event
+from app.constants.events import Events
 
 
 def create_order(
@@ -66,6 +68,14 @@ def create_order(
     db.commit()
     db.refresh(order)
 
+    create_audit_event(
+        db=db,
+        event_type=Events.ORDER_CREATED,
+        entity_type="ORDER",
+        entity_id=order.id,
+        description=f"Order #{order.id} created for product '{product.title}' (qty: {order.quantity}, total: ₹{total})",
+    )
+
     return {
         "order_id": order.id,
         "amount": total,
@@ -107,6 +117,15 @@ def verify_payment(
 
     db.commit()
     db.refresh(order)
+
+    create_audit_event(
+        db=db,
+        event_type=Events.PAYMENT_VERIFIED,
+        entity_type="ORDER",
+        entity_id=order.id,
+        description=f"Payment verified for order #{order.id} via API",
+    )
+
     return order
 
 

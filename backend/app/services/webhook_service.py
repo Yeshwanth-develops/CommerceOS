@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from app.models.order import Order
 from app.models.product import Product
 from app.constants.order_status import OrderStatus
+from app.services.audit_service import create_audit_event
+from app.constants.events import Events
 
 
 def handle_payment_captured(
@@ -35,6 +37,14 @@ def handle_payment_captured(
 
             db.commit()
 
+        create_audit_event(
+            db=db,
+            event_type=Events.PAYMENT_VERIFIED,
+            entity_type="ORDER",
+            entity_id=order.id,
+            description=f"Payment captured webhook received for order #{order.id} (Razorpay ID: {razorpay_order_id})",
+        )
+
         return True
     except Exception as e:
         print("Error handling payment.captured:", e)
@@ -64,6 +74,15 @@ def handle_payment_failed(
 
         order.status = OrderStatus.FAILED
         db.commit()
+
+        create_audit_event(
+            db=db,
+            event_type=Events.PAYMENT_FAILED,
+            entity_type="ORDER",
+            entity_id=order.id,
+            description=f"Payment failed webhook received for order #{order.id} (Razorpay ID: {razorpay_order_id})",
+        )
+
         return True
     except Exception as e:
         print("Error handling payment.failed:", e)
@@ -104,6 +123,14 @@ def handle_refund_created(
                 product.stock += order.quantity
 
             db.commit()
+
+        create_audit_event(
+            db=db,
+            event_type=Events.REFUND_CREATED,
+            entity_type="ORDER",
+            entity_id=order.id,
+            description=f"Refund created webhook received for order #{order.id} (Razorpay ID: {razorpay_order_id})",
+        )
 
         return True
     except Exception as e:
