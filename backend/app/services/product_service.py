@@ -1,5 +1,6 @@
 from typing import Optional, List, Dict, Any
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from app.models.product import Product
 from app.schemas.product import ProductCreate, ProductUpdate
 from app.services.audit_service import create_audit_event
@@ -10,8 +11,46 @@ def create_product(
     db: Session,
     product: ProductCreate
 ) -> Product:
+    clean_title = product.title.strip()
+
+    # Check if a product with the same title already exists for this merchant (case-insensitive)
+    existing_product = (
+        db.query(Product)
+        .filter(
+            Product.merchant_id == product.merchant_id,
+            func.lower(Product.title) == func.lower(clean_title)
+        )
+        .first()
+    )
+
+    if existing_product:
+        # Intelligent Restock: Update existing product instead of creating duplicate
+        previous_stock = existing_product.stock
+        existing_product.stock += product.stock
+
+        if product.price and product.price > 0:
+            existing_product.price = product.price
+        if product.description:
+            existing_product.description = product.description
+        if product.category_id is not None:
+            existing_product.category_id = product.category_id
+
+        db.commit()
+        db.refresh(existing_product)
+
+        create_audit_event(
+            db=db,
+            event_type=Events.PRODUCT_UPDATED,
+            entity_type="PRODUCT",
+            entity_id=existing_product.id,
+            description=f"Restocked product '{existing_product.title}' with +{product.stock} units (Stock: {previous_stock} ➔ {existing_product.stock}, Price: ₹{existing_product.price})",
+        )
+
+        return existing_product
+
+    # Otherwise create a new product
     db_product = Product(
-        title=product.title,
+        title=clean_title,
         description=product.description,
         price=product.price,
         stock=product.stock,
@@ -93,7 +132,7 @@ def update_product(
         return None
 
     if product_data.title is not None:
-        product.title = product_data.title
+        product.title = product_data.title.strip()
     if product_data.description is not None:
         product.description = product_data.description
     if product_data.price is not None:
@@ -109,7 +148,7 @@ def update_product(
         event_type=Events.PRODUCT_UPDATED,
         entity_type="PRODUCT",
         entity_id=product.id,
-        description=f"Product '{product.title}' updated",
+        description=f"Product '{product.title}' updated (Stock: {product.stock}, Price: ₹{product.price})",
     )
 
     return product

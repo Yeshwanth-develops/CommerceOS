@@ -7,6 +7,7 @@ from app.api.order import router as order_router
 from app.api.payment import router as payment_router
 from app.api.webhook import router as webhook_router
 from app.api.audit import router as audit_router
+from app.api.growth import router as growth_router
 
 app = FastAPI(
     title="CommerceOS API",
@@ -31,6 +32,7 @@ app.include_router(order_router)
 app.include_router(payment_router)
 app.include_router(webhook_router)
 app.include_router(audit_router)
+app.include_router(growth_router)
 
 
 @app.get("/")

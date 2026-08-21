@@ -49,6 +49,9 @@ export default function RootLayout({
                 <Link href="/orders" className="hover:text-black dark:hover:text-white transition">
                   Orders
                 </Link>
+                <Link href="/growth" className="hover:text-black dark:hover:text-white transition flex items-center gap-1 text-purple-600 dark:text-purple-400">
+                  <span>✨</span> Growth AI
+                </Link>
                 <Link href="/audit" className="hover:text-black dark:hover:text-white transition">
                   Audit Trail
                 </Link>

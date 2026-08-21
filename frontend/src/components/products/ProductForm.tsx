@@ -21,13 +21,14 @@ export default function ProductForm({
 
         try {
             setLoading(true);
-            const res = await fetch("http://localhost:8000/products/", {
+            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+            const res = await fetch(`${baseUrl}/products/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    title,
+                    title: title.trim(),
                     description,
                     price: Number(price),
                     stock: Number(stock),
@@ -36,10 +37,11 @@ export default function ProductForm({
             });
 
             if (!res.ok) {
-                throw new Error("Failed to create product");
+                throw new Error("Failed to save product");
             }
 
-            alert("Product Created Successfully");
+            const data = await res.json();
+            alert(`✅ Success: '${data.title}' saved/restocked! Current total stock: ${data.stock}`);
 
             setTitle("");
             setDescription("");
@@ -50,8 +52,8 @@ export default function ProductForm({
                 onProductCreated();
             }
         } catch (error) {
-            console.error("Error creating product:", error);
-            alert("Error creating product. Please check backend server.");
+            console.error("Error saving product:", error);
+            alert("Error saving product. Please check backend server.");
         } finally {
             setLoading(false);
         }
@@ -59,13 +61,18 @@ export default function ProductForm({
 
     return (
         <div className="space-y-4 max-w-md bg-white dark:bg-zinc-900 p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-                Add New Product
-            </h2>
+            <div>
+                <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                    Add or Restock Product
+                </h2>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                    Adding an existing title will automatically restock and update it without duplicates.
+                </p>
+            </div>
 
             <input
                 className="border border-zinc-300 dark:border-zinc-700 bg-transparent rounded-lg p-2.5 w-full text-sm outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
-                placeholder="Title"
+                placeholder="Title (e.g. Vintage Mechanical Keyboard)"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
             />
@@ -89,7 +96,7 @@ export default function ProductForm({
                 <input
                     type="number"
                     className="border border-zinc-300 dark:border-zinc-700 bg-transparent rounded-lg p-2.5 w-full text-sm outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
-                    placeholder="Stock quantity"
+                    placeholder="Stock to add"
                     value={stock}
                     onChange={(e) => setStock(e.target.value)}
                 />
@@ -100,7 +107,7 @@ export default function ProductForm({
                 className="bg-black hover:bg-zinc-800 text-white dark:bg-white dark:text-black dark:hover:bg-zinc-200 font-medium px-4 py-2.5 rounded-lg w-full transition disabled:opacity-50 text-sm"
                 onClick={createProduct}
             >
-                {loading ? "Creating..." : "Create Product"}
+                {loading ? "Processing..." : "Save / Restock Product"}
             </button>
         </div>
     );
