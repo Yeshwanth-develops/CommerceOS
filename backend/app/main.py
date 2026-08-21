@@ -5,6 +5,7 @@ import app.models
 from app.api.product import router as product_router
 from app.api.order import router as order_router
 from app.api.payment import router as payment_router
+from app.api.webhook import router as webhook_router
 
 app = FastAPI(
     title="CommerceOS API",
@@ -27,6 +28,7 @@ app.add_middleware(
 app.include_router(product_router)
 app.include_router(order_router)
 app.include_router(payment_router)
+app.include_router(webhook_router)
 
 
 @app.get("/")
