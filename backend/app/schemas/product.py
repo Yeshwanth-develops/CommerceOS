@@ -4,18 +4,18 @@ from pydantic import BaseModel
 
 class ProductCreate(BaseModel):
     title: str
-    description: str
+    description: Optional[str] = None
     price: float
-    stock: int
-    merchant_id: int
+    stock: int = 10
+    merchant_id: Optional[int] = 1
     category_id: Optional[int] = None
 
 
 class ProductUpdate(BaseModel):
-    title: str
-    description: str
-    price: float
-    stock: int
+    title: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float] = None
+    stock: Optional[int] = None
     category_id: Optional[int] = None
 
 
