@@ -12,25 +12,30 @@ def create_product(
     product: ProductCreate
 ) -> Product:
     clean_title = product.title.strip()
-    m_id = product.merchant_id or 1
 
-    # Ensure Merchant exists to satisfy foreign key constraint
+    # Safely resolve or create merchant
     from app.models.merchant import Merchant
-    merchant = db.query(Merchant).filter(Merchant.id == m_id).first()
-    if not merchant:
-        merchant = Merchant(id=m_id, name="Apex Retail Technologies", email="founder@apexretail.io")
-        db.add(merchant)
-        db.commit()
+    m_id = None
+    try:
+        merchant = db.query(Merchant).first()
+        if not merchant:
+            merchant = Merchant(name="Apex Retail Technologies", email="founder@apexretail.io")
+            db.add(merchant)
+            db.commit()
+            db.refresh(merchant)
+        m_id = merchant.id
+    except Exception as e:
+        db.rollback()
+        m_id = None
 
-    # Check if a product with the same title already exists for this merchant (case-insensitive)
-    existing_product = (
-        db.query(Product)
-        .filter(
-            Product.merchant_id == m_id,
-            func.lower(Product.title) == func.lower(clean_title)
-        )
-        .first()
+    # Check if a product with the same title already exists (case-insensitive)
+    existing_query = db.query(Product).filter(
+        func.lower(Product.title) == func.lower(clean_title)
     )
+    if m_id is not None:
+        existing_query = existing_query.filter(Product.merchant_id == m_id)
+
+    existing_product = existing_query.first()
 
     if existing_product:
         # Intelligent Restock: Update existing product instead of creating duplicate

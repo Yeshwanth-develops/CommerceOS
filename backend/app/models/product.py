@@ -1,6 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
-from sqlalchemy.orm import relationship
-
+from sqlalchemy import Column, Integer, String, Float
 from app.db.base import Base
 
 
@@ -8,35 +6,12 @@ class Product(Base):
     __tablename__ = "products"
 
     id = Column(Integer, primary_key=True, index=True)
-
     title = Column(String, nullable=False)
-
     description = Column(String)
-
     price = Column(Float, nullable=False)
-
     stock = Column(Integer, default=0)
-
-    merchant_id = Column(
-        Integer,
-        ForeignKey("merchants.id"),
-        nullable=True
-    )
-
-    category_id = Column(
-        Integer,
-        ForeignKey("categories.id"),
-        nullable=True
-    )
-
-    merchant = relationship(
-        "Merchant",
-        back_populates="products"
-    )
-
-    category = relationship(
-        "Category"
-    )
+    merchant_id = Column(Integer, nullable=True)
+    category_id = Column(Integer, nullable=True)
 
     @property
     def inventory_status(self) -> str:
