@@ -35,7 +35,9 @@ from app.api.assistant import router as assistant_router
 # Enable CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+    "https://argos-commerceos.vercel.app/"
+],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
