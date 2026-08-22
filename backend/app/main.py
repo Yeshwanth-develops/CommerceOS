@@ -10,6 +10,18 @@ from app.db.database import Base
 async def lifespan(fastapi_app: FastAPI):
     # Automatically create tables on startup
     Base.metadata.create_all(bind=engine)
+    try:
+        from app.models.product import Product
+        from app.db.database import SessionLocal
+        db = SessionLocal()
+        count = db.query(Product).count()
+        if count == 0:
+            print("[*] Empty database detected. Seeding initial demo catalog...")
+            from seed_demo_data import seed_demo_data
+            seed_demo_data()
+        db.close()
+    except Exception as e:
+        print(f"[!] Auto-seed notice: {e}")
     yield
 
 
@@ -67,4 +79,13 @@ def root():
 def health():
     return {
         "status": "healthy"
+    }
+
+@app.post("/seed")
+def seed():
+    from seed_demo_data import seed_demo_data
+    seed_demo_data()
+    return {
+        "status": "success",
+        "message": "Demo catalog, orders, and AI intelligence seeded successfully"
     }
