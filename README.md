@@ -1,19 +1,16 @@
 # ARGOS: AI Revenue Growth Operating System
 
-[![Live Demo](https://img.shields.io/badge/Live%20Website-argos--commerceos.vercel.app-7928CA?style=for-the-badge&logo=vercel&logoColor=white)](https://argos-commerceos.vercel.app)
-[![Backend API](https://img.shields.io/badge/Railway%20API-Online-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)](https://commerceos-production-5fac.up.railway.app)
-[![API Docs](https://img.shields.io/badge/Swagger%20Docs-Interactive-02569B?style=for-the-badge&logo=fastapi&logoColor=white)](https://commerceos-production-5fac.up.railway.app/docs)
 
 ARGOS transforms a merchant store into an autonomous revenue engine by combining **AI Growth Intelligence, Generative Campaigns, Smart Product Bundling, Autonomous Execution, Razorpay Payments, and Explainable Audit Trails** into a single operating system.
 
 ---
 
-## 🌐 Live Deployments & Links
+## Live Deployments
 
-* 🚀 **Live Store & Dashboard**: [https://argos-commerceos.vercel.app](https://argos-commerceos.vercel.app)
-* ⚡ **Production Backend API**: [https://commerceos-production-5fac.up.railway.app](https://commerceos-production-5fac.up.railway.app)
-* 📚 **Interactive API Documentation (Swagger)**: [https://commerceos-production-5fac.up.railway.app/docs](https://commerceos-production-5fac.up.railway.app/docs)
-* 🩺 **Backend Health Endpoint**: [https://commerceos-production-5fac.up.railway.app/health](https://commerceos-production-5fac.up.railway.app/health)
+* **Live Store**: [https://argos-commerceos.vercel.app](https://argos-commerceos.vercel.app)
+* **Production Backend API**: [https://commerceos-production-5fac.up.railway.app](https://commerceos-production-5fac.up.railway.app)
+* **Interactive API Documentation (Swagger)**: [https://commerceos-production-5fac.up.railway.app/docs](https://commerceos-production-5fac.up.railway.app/docs)
+* **Backend Health Endpoint**: [https://commerceos-production-5fac.up.railway.app/health](https://commerceos-production-5fac.up.railway.app/health)
 
 ---
 
@@ -35,6 +32,7 @@ Most commerce platforms provide dashboards.
 ---
 
 ## 2. What Makes ARGOS Different?
+
 
 ARGOS goes beyond analysis.
 
@@ -340,8 +338,8 @@ CommerceOS
 ├── frontend
 │   ├── src
 │   │   ├── app
-│   │   │   ├── page.tsx               # Minimalist Landing Page
-│   │   │   ├── dashboard/page.tsx     # Executive Analytics Command Center
+│   │   │   ├── page.tsx               # Landing Page
+│   │   │   ├── dashboard/page.tsx     # Analytics Command Center
 │   │   │   ├── products/page.tsx      # Real-Time Inventory & Catalog
 │   │   │   ├── orders/page.tsx        # Payment Capture Ledger
 │   │   │   ├── growth/page.tsx        # AI Growth Diagnostics Briefing
@@ -352,7 +350,7 @@ CommerceOS
 │   │   │   ├── audit/page.tsx         # Immutable Cryptographic Audit Trail
 │   │   │   └── assistant/page.tsx     # AI Commerce Copilot Interface
 │   │   ├── components/                # Glassmorphic UI Components & Payment Modal
-│   │   └── lib/                       # Centralized API Client & Date Utils
+│   │   └── lib/                       # Centralized API Client
 │
 ├── backend
 │   ├── app
@@ -381,18 +379,50 @@ For Merchants:
 
 ---
 
-## 10. Demo Flow
+# 11. Demo Flow
 
-1. **Explore Store Catalog**: Browse products in `/products` with live stock status indicators.
-2. **Execute Live Payment**: Click **"Buy Now"** to open Razorpay modal checkout and complete a test transaction.
-3. **Verify Cryptographic Settlement**: View instantaneous payment capture and signature verification.
-4. **Inspect Audit Trail**: Review the newly minted `PAYMENT_VERIFIED` and `ORDER_CREATED` entries in `/audit`.
-5. **Review AI Growth Score**: Open `/growth` to inspect your store's calculated Growth Health Score (88/100) and AI briefing.
-6. **Generate Bundles & Campaigns**: Review autonomous high-AOV product pairings in `/bundles` and `/campaigns`.
-7. **One-Click Action Center**: Head to `/action-center` and click **"Activate 🚀"** to deploy recommendations live.
-8. **Consult AI Commerce Copilot**: Ask store-specific questions in natural language at `/assistant` or via the floating assistant widget.
+### Step 1
+
+Create Product
+
+### Step 2
+
+Create Order
+
+### Step 3
+
+Razorpay Payment
+
+### Step 4
+
+Payment Verification
+
+### Step 5
+
+Audit Trail Logging
+
+### Step 6
+
+Growth Agent Analysis
+
+### Step 7
+
+Campaign Generation
+
+### Step 8
+
+Bundle Generation
+
+### Step 9
+
+Execute AI Recommendations
+
+### Step 10
+
+Monitor Revenue Growth
 
 ---
+
 
 ## 🏆 ARGOS Delivers
 
