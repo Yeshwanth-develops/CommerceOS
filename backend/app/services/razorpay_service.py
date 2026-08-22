@@ -16,7 +16,7 @@ def create_razorpay_order(amount: float):
     data = {
         "amount": int(amount * 100),  # convert ₹ to paise
         "currency": "INR",
-        "receipt": "commerceos_receipt",
+        "receipt": "argos_receipt",
     }
     return client.order.create(data=data)
 

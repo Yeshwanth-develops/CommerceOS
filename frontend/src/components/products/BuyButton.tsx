@@ -51,7 +51,7 @@ export default function BuyButton({
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: Math.round(order.amount * 100),
                 currency: "INR",
-                name: "CommerceOS",
+                name: "ARGOS",
                 description: title,
                 order_id: order.razorpay_order_id,
                 theme: {
@@ -113,12 +113,25 @@ export default function BuyButton({
         <button
             onClick={handleBuy}
             disabled={loading || isOutOfStock}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${isOutOfStock
-                    ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed"
-                    : "bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
-                } disabled:opacity-60`}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center justify-center gap-1.5 shrink-0 cursor-pointer shadow-xs ${
+                isOutOfStock
+                    ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed border border-zinc-200 dark:border-zinc-700"
+                    : "bg-zinc-900 text-white hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 active:scale-95"
+            } disabled:opacity-60`}
         >
-            {loading ? "Processing..." : isOutOfStock ? "Out of Stock" : "Buy Now"}
+            {loading ? (
+                <>
+                    <span className="animate-spin text-xs">🔄</span>
+                    <span>Opening...</span>
+                </>
+            ) : isOutOfStock ? (
+                "Out of Stock"
+            ) : (
+                <>
+                    <span>Buy Now</span>
+                    <span>⚡</span>
+                </>
+            )}
         </button>
     );
 }

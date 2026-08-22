@@ -434,7 +434,7 @@ export default function GrowthPage() {
                                 ) : (
                                     <ul className="space-y-3">
                                         {insights.recommendations.map((rec, idx) => (
-                                             <li
+                                            <li
                                                 key={idx}
                                                 className="p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 text-sm text-zinc-800 dark:text-zinc-200 flex items-start gap-3"
                                             >
@@ -452,7 +452,7 @@ export default function GrowthPage() {
                             <div className="lg:col-span-8 p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4">
                                 <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
                                     <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                                        <span>🧠</span> Gemini AI Growth Strategy Briefing
+                                        <span>🧠</span> AI Growth Strategy Briefing
                                     </h2>
                                 </div>
 

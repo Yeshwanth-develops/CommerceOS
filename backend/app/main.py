@@ -16,11 +16,12 @@ from app.api.growth import router as growth_router
 from app.api.campaign import router as campaign_router
 from app.api.bundle import router as bundle_router
 from app.api.agent_actions import router as agent_actions_router
+from app.api.assistant import router as assistant_router
 
 
 
 app = FastAPI(
-    title="CommerceOS API",
+    title="ARGOS API",
     version="1.0.0",
 )
 
@@ -46,9 +47,10 @@ app.include_router(growth_router)
 app.include_router(campaign_router)
 app.include_router(bundle_router)
 app.include_router(agent_actions_router)
+app.include_router(assistant_router)
 
 @app.get("/")
 def root():
     return {
-        "message": "CommerceOS Running"
+        "message": "ARGOS Running"
     }

@@ -38,8 +38,8 @@ class Product(Base):
 
     @property
     def inventory_status(self) -> str:
-        if self.stock == 0:
+        if self.stock <= 0:
             return "Out of Stock"
-        elif self.stock < 10:
+        elif self.stock < 15:
             return "Low Stock"
         return "Available"

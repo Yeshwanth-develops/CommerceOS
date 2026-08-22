@@ -84,7 +84,7 @@ def get_products(
             Product.title.ilike(f"%{search}%")
         )
 
-    products = query.order_by(Product.id.asc()).all()
+    products = query.order_by(Product.id.desc()).all()
 
     result = []
     for product in products:
@@ -175,7 +175,7 @@ def delete_product(
 def get_inventory_status(stock: int) -> str:
     if stock <= 0:
         return "Out of Stock"
-    elif stock < 10:
+    elif stock < 15:
         return "Low Stock"
     else:
         return "Available"
