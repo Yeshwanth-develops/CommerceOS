@@ -39,23 +39,32 @@ export default function RootLayout({
                 </span>
                 CommerceOS
               </Link>
-              <nav className="flex items-center gap-4 text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                <Link href="/dashboard" className="hover:text-black dark:hover:text-white transition">
+              <nav className="flex items-center gap-3.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 overflow-x-auto py-1">
+                <Link href="/dashboard" className="hover:text-black dark:hover:text-white transition shrink-0">
                   Dashboard
                 </Link>
-                <Link href="/products" className="hover:text-black dark:hover:text-white transition">
+                <Link href="/products" className="hover:text-black dark:hover:text-white transition shrink-0">
                   Products
                 </Link>
-                <Link href="/orders" className="hover:text-black dark:hover:text-white transition">
+                <Link href="/orders" className="hover:text-black dark:hover:text-white transition shrink-0">
                   Orders
                 </Link>
-                <Link href="/growth" className="hover:text-black dark:hover:text-white transition flex items-center gap-1 text-purple-600 dark:text-purple-400">
-                  <span>✨</span> Growth AI
+                <Link href="/growth" className="hover:text-black dark:hover:text-white transition shrink-0 text-purple-600 dark:text-purple-400">
+                  Growth AI
                 </Link>
-                <Link href="/agent-actions" className="hover:text-black dark:hover:text-white transition flex items-center gap-1 text-teal-600 dark:text-teal-400">
-                  <span>⚡</span> Agent Actions
+                <Link href="/campaigns" className="hover:text-black dark:hover:text-white transition shrink-0">
+                  Campaigns
                 </Link>
-                <Link href="/audit" className="hover:text-black dark:hover:text-white transition">
+                <Link href="/bundles" className="hover:text-black dark:hover:text-white transition shrink-0">
+                  Bundles
+                </Link>
+                <Link href="/agent-actions" className="hover:text-black dark:hover:text-white transition shrink-0 text-teal-600 dark:text-teal-400">
+                  Execution Center
+                </Link>
+                <Link href="/action-center" className="hover:text-black dark:hover:text-white transition shrink-0 font-semibold text-emerald-600 dark:text-emerald-400">
+                  Action Center
+                </Link>
+                <Link href="/audit" className="hover:text-black dark:hover:text-white transition shrink-0">
                   Audit Trail
                 </Link>
               </nav>

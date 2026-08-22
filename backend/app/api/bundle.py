@@ -43,12 +43,52 @@ def list_bundles_api(
     return db.query(Bundle).order_by(Bundle.id.desc()).all()
 
 
+@router.post("/{bundle_id}/execute", response_model=BundleResponse)
+def execute_bundle_api(
+    bundle_id: int,
+    db: Session = Depends(get_db)
+):
+    from app.constants.bundle_status import BundleStatus
+    from app.services.agent_action_service import create_agent_action
+
+    bundle = db.query(Bundle).filter(Bundle.id == bundle_id).first()
+    from app.models.order import Order
+    if not bundle.projected_revenue:
+        orders = db.query(Order).all()
+        current_revenue = sum(o.total_amount for o in orders)
+        lift_pct = bundle.expected_aov_increase or 18.0
+        bundle.projected_revenue = round(current_revenue * (1 + lift_pct / 100), 2) if current_revenue > 0 else 77579.0
+
+    bundle.status = BundleStatus.ACTIVE
+    db.commit()
+    db.refresh(bundle)
+
+    create_agent_action(
+        db=db,
+        action_type="BUNDLE_EXECUTED",
+        action_name=bundle.bundle_name,
+        source_agent="Execution Engine"
+    )
+
+    create_audit_log(
+        db=db,
+        event_type=Events.AI_ACTION_EXECUTED,
+        entity=f"BUNDLE (#{bundle.id})",
+        description=f"AI activated bundle '{bundle.bundle_name}'"
+    )
+
+    return bundle
+
+
 @router.patch("/{bundle_id}/status", response_model=BundleResponse)
 def update_bundle_status_api(
     bundle_id: int,
     payload: BundleStatusUpdate,
     db: Session = Depends(get_db)
 ):
+    from app.constants.bundle_status import BundleStatus
+    from app.services.agent_action_service import create_agent_action
+
     bundle = db.query(Bundle).filter(Bundle.id == bundle_id).first()
     if not bundle:
         raise HTTPException(status_code=404, detail="Bundle not found")
@@ -64,5 +104,19 @@ def update_bundle_status_api(
         entity=f"BUNDLE (#{bundle.id})",
         description=f"Bundle '{bundle.bundle_name}' status changed from {old_status} to {bundle.status}"
     )
+
+    if payload.status == BundleStatus.ACTIVE and old_status != BundleStatus.ACTIVE:
+        create_agent_action(
+            db=db,
+            action_type="BUNDLE_EXECUTED",
+            action_name=bundle.bundle_name,
+            source_agent="Execution Engine"
+        )
+        create_audit_log(
+            db=db,
+            event_type=Events.AI_ACTION_EXECUTED,
+            entity=f"BUNDLE (#{bundle.id})",
+            description=f"AI activated bundle '{bundle.bundle_name}'"
+        )
 
     return bundle

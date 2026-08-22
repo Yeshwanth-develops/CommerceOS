@@ -26,6 +26,8 @@ class Bundle(Base):
 
     expected_aov_increase = Column(Float)
 
+    projected_revenue = Column(Float, nullable=True)
+
     reasoning = Column(Text, nullable=True)
 
     status = Column(

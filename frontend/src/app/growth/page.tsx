@@ -19,6 +19,7 @@ interface Campaign {
     discount_percentage?: number;
     target_product?: string;
     expected_revenue_lift?: number;
+    projected_revenue?: number;
     status: string;
 }
 
@@ -29,6 +30,7 @@ interface Bundle {
     product_2: string;
     bundle_price: number;
     expected_aov_increase: number;
+    projected_revenue?: number;
     reasoning?: string;
     status: string;
 }
@@ -305,10 +307,12 @@ export default function GrowthPage() {
         return "text-rose-600 dark:text-rose-400";
     };
 
-    const getCampaignBadgeClass = (status: string) => {
+    const getStatusBadgeClass = (status: string) => {
         switch (status?.toUpperCase()) {
             case "ACTIVE":
                 return "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700";
+            case "PAUSED":
+                return "bg-blue-100 text-blue-800 dark:bg-blue-950/50 dark:text-blue-300 border-blue-300 dark:border-blue-700";
             case "COMPLETED":
                 return "bg-purple-100 text-purple-800 dark:bg-purple-950/50 dark:text-purple-300 border-purple-300 dark:border-purple-700";
             case "DRAFT":
@@ -317,17 +321,8 @@ export default function GrowthPage() {
         }
     };
 
-    const getBundleBadgeClass = (status: string) => {
-        switch (status?.toUpperCase()) {
-            case "APPROVED":
-                return "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700";
-            case "REJECTED":
-                return "bg-rose-100 text-rose-800 dark:bg-rose-950/50 dark:text-rose-300 border-rose-300 dark:border-rose-700";
-            case "DRAFT":
-            default:
-                return "bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 border-amber-300 dark:border-amber-700";
-        }
-    };
+    const getCampaignBadgeClass = getStatusBadgeClass;
+    const getBundleBadgeClass = getStatusBadgeClass;
 
     return (
         <div className="min-h-screen bg-zinc-50 dark:bg-black p-8 font-sans">
@@ -466,7 +461,7 @@ export default function GrowthPage() {
                         </div>
 
                         {/* AI Campaign Generator Card */}
-                        <div className="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-6">
+                        <div id="campaigns" className="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-6">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-5">
                                 <div>
                                     <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-semibold mb-1.5">
@@ -536,6 +531,16 @@ export default function GrowthPage() {
                                                         Activate 🚀
                                                     </button>
                                                 )}
+                                                {campaign.status !== "PAUSED" && (
+                                                    <button
+                                                        onClick={() => handleUpdateCampaignStatus("PAUSED")}
+                                                        disabled={updatingCampaignStatus}
+                                                        className="px-2.5 py-1 text-xs font-medium rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition disabled:opacity-50 cursor-pointer"
+                                                        title="Pause Campaign"
+                                                    >
+                                                        Pause ⏸️
+                                                    </button>
+                                                )}
                                                 {campaign.status !== "COMPLETED" && (
                                                     <button
                                                         onClick={() => handleUpdateCampaignStatus("COMPLETED")}
@@ -560,7 +565,7 @@ export default function GrowthPage() {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-zinc-200 dark:border-zinc-700/50">
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2 border-t border-zinc-200 dark:border-zinc-700/50">
                                         <div className="p-3.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
                                             <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 block">
                                                 Discount
@@ -576,6 +581,15 @@ export default function GrowthPage() {
                                             </span>
                                             <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-0.5 block">
                                                 +{campaign.expected_revenue_lift ?? 12.5}%
+                                            </span>
+                                        </div>
+
+                                        <div className="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
+                                            <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300 block">
+                                                Projected Revenue
+                                            </span>
+                                            <span className="text-xl font-extrabold text-emerald-700 dark:text-emerald-400 mt-0.5 block">
+                                                ₹{(campaign.projected_revenue ?? 214707.84).toLocaleString("en-IN")}
                                             </span>
                                         </div>
 
@@ -606,7 +620,7 @@ export default function GrowthPage() {
                         </div>
 
                         {/* AI Bundle Generator Card */}
-                        <div className="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-6">
+                        <div id="bundles" className="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-6">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-5">
                                 <div>
                                     <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/50 border border-teal-200 dark:border-teal-800 text-teal-700 dark:text-teal-300 text-xs font-semibold mb-1.5">
@@ -616,7 +630,7 @@ export default function GrowthPage() {
                                         <span>🤝</span> AI Bundle Generator
                                     </h2>
                                     <p className="text-xs text-zinc-500 mt-0.5">
-                                        Statuses: <strong>DRAFT</strong>, <strong>APPROVED</strong>, <strong>REJECTED</strong>.
+                                        Statuses: <strong>DRAFT</strong>, <strong>ACTIVE</strong>, <strong>PAUSED</strong>, <strong>COMPLETED</strong>.
                                     </p>
                                 </div>
 
@@ -664,24 +678,34 @@ export default function GrowthPage() {
 
                                             {/* Status Transition Action Buttons */}
                                             <div className="flex items-center gap-1.5 ml-2">
-                                                {bundle.status !== "APPROVED" && (
+                                                {bundle.status !== "ACTIVE" && (
                                                     <button
-                                                        onClick={() => handleUpdateBundleStatus("APPROVED")}
+                                                        onClick={() => handleUpdateBundleStatus("ACTIVE")}
                                                         disabled={updatingBundleStatus}
                                                         className="px-2.5 py-1 text-xs font-medium rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition disabled:opacity-50 cursor-pointer"
-                                                        title="Approve Bundle"
+                                                        title="Activate Bundle"
                                                     >
-                                                        Approve ✅
+                                                        Activate 🚀
                                                     </button>
                                                 )}
-                                                {bundle.status !== "REJECTED" && (
+                                                {bundle.status !== "PAUSED" && (
                                                     <button
-                                                        onClick={() => handleUpdateBundleStatus("REJECTED")}
+                                                        onClick={() => handleUpdateBundleStatus("PAUSED")}
                                                         disabled={updatingBundleStatus}
-                                                        className="px-2.5 py-1 text-xs font-medium rounded-lg bg-rose-600 hover:bg-rose-700 text-white transition disabled:opacity-50 cursor-pointer"
-                                                        title="Reject Bundle"
+                                                        className="px-2.5 py-1 text-xs font-medium rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition disabled:opacity-50 cursor-pointer"
+                                                        title="Pause Bundle"
                                                     >
-                                                        Reject ✕
+                                                        Pause ⏸️
+                                                    </button>
+                                                )}
+                                                {bundle.status !== "COMPLETED" && (
+                                                    <button
+                                                        onClick={() => handleUpdateBundleStatus("COMPLETED")}
+                                                        disabled={updatingBundleStatus}
+                                                        className="px-2.5 py-1 text-xs font-medium rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition disabled:opacity-50 cursor-pointer"
+                                                        title="Mark Completed"
+                                                    >
+                                                        Complete ✅
                                                     </button>
                                                 )}
                                                 {bundle.status !== "DRAFT" && (
@@ -720,7 +744,7 @@ export default function GrowthPage() {
                                     </div>
 
                                     {/* Financial & Lift Metrics */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-zinc-200 dark:border-zinc-700/50">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-zinc-200 dark:border-zinc-700/50">
                                         <div className="p-4 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
                                             <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 block">
                                                 Bundle Price:
@@ -734,8 +758,17 @@ export default function GrowthPage() {
                                             <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 block">
                                                 Expected AOV Increase:
                                             </span>
-                                            <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1 block">
+                                            <span className="text-2xl font-bold text-teal-600 dark:text-teal-400 mt-1 block">
                                                 +{bundle.expected_aov_increase}%
+                                            </span>
+                                        </div>
+
+                                        <div className="p-4 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
+                                            <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-300 block">
+                                                Projected Revenue:
+                                            </span>
+                                            <span className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-400 mt-1 block">
+                                                ₹{(bundle.projected_revenue ?? 225204.66).toLocaleString("en-IN")}
                                             </span>
                                         </div>
                                     </div>

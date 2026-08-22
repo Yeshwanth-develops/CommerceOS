@@ -17,5 +17,6 @@ class Campaign(Base):
     target_product = Column(String)
 
     expected_revenue_lift = Column(Float)
+    projected_revenue = Column(Float, nullable=True)
 
     status = Column(String, default="DRAFT")

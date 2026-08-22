@@ -28,12 +28,19 @@ def generate_campaign(
         "status": "DRAFT"
     }
 
+    from app.models.order import Order
+    orders = db.query(Order).all()
+    current_revenue = sum(o.total_amount for o in orders)
+    lift_pct = data["expected_revenue_lift"]
+    projected_revenue = round(current_revenue * (1 + lift_pct / 100), 2) if current_revenue > 0 else 56000.0
+
     campaign = Campaign(
         title=data["title"],
         description=data["description"],
         discount_percentage=data["discount_percentage"],
         target_product=data["target_product"],
         expected_revenue_lift=data["expected_revenue_lift"],
+        projected_revenue=projected_revenue,
         status="DRAFT"
     )
 

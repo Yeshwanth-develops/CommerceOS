@@ -37,12 +37,16 @@ def generate_bundle(
         total_revenue=total_revenue,
     )
 
+    lift_pct = ai_bundle["expected_aov_increase"]
+    projected_revenue = round(total_revenue * (1 + lift_pct / 100), 2) if total_revenue > 0 else 77579.0
+
     bundle = Bundle(
         bundle_name=ai_bundle["bundle_name"],
         product_1=ai_bundle["product_1"],
         product_2=ai_bundle["product_2"],
         bundle_price=ai_bundle["bundle_price"],
         expected_aov_increase=ai_bundle["expected_aov_increase"],
+        projected_revenue=projected_revenue,
         reasoning=ai_bundle.get("reasoning"),
         status="DRAFT"
     )

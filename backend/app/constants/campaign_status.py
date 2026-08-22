@@ -1,6 +1,7 @@
 class CampaignStatus:
     DRAFT = "DRAFT"
     ACTIVE = "ACTIVE"
+    PAUSED = "PAUSED"
     COMPLETED = "COMPLETED"
 
-    ALL = [DRAFT, ACTIVE, COMPLETED]
+    ALL = [DRAFT, ACTIVE, PAUSED, COMPLETED]

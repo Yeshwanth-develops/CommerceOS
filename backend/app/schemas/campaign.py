@@ -10,6 +10,7 @@ class CampaignResponse(BaseModel):
     discount_percentage: Optional[float] = None
     target_product: Optional[str] = None
     expected_revenue_lift: Optional[float] = None
+    projected_revenue: Optional[float] = None
     status: Optional[str] = CampaignStatus.DRAFT
 
     class Config:

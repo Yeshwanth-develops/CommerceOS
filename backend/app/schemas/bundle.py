@@ -10,6 +10,7 @@ class BundleResponse(BaseModel):
     product_2: str
     bundle_price: float
     expected_aov_increase: float
+    projected_revenue: Optional[float] = None
     reasoning: Optional[str] = None
     status: Optional[str] = BundleStatus.DRAFT
 
