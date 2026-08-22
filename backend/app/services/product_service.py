@@ -12,10 +12,10 @@ def create_product(
     product: ProductCreate
 ) -> Product:
     clean_title = product.title.strip()
+    m_id = product.merchant_id or 1
 
     # Ensure Merchant exists to satisfy foreign key constraint
     from app.models.merchant import Merchant
-    m_id = product.merchant_id or 1
     merchant = db.query(Merchant).filter(Merchant.id == m_id).first()
     if not merchant:
         merchant = Merchant(id=m_id, name="Apex Retail Technologies", email="founder@apexretail.io")
@@ -35,7 +35,8 @@ def create_product(
     if existing_product:
         # Intelligent Restock: Update existing product instead of creating duplicate
         previous_stock = existing_product.stock
-        existing_product.stock += product.stock
+        existing_stock_to_add = product.stock if product.stock is not None else 10
+        existing_product.stock += existing_stock_to_add
 
         if product.price and product.price > 0:
             existing_product.price = product.price
@@ -47,13 +48,16 @@ def create_product(
         db.commit()
         db.refresh(existing_product)
 
-        create_audit_event(
-            db=db,
-            event_type=Events.PRODUCT_UPDATED,
-            entity_type="PRODUCT",
-            entity_id=existing_product.id,
-            description=f"Restocked product '{existing_product.title}' with +{product.stock} units (Stock: {previous_stock} ➔ {existing_product.stock}, Price: ₹{existing_product.price})",
-        )
+        try:
+            create_audit_event(
+                db=db,
+                event_type=Events.PRODUCT_UPDATED,
+                entity_type="PRODUCT",
+                entity_id=existing_product.id,
+                description=f"Restocked product '{existing_product.title}' with +{existing_stock_to_add} units (Stock: {previous_stock} ➔ {existing_product.stock}, Price: ₹{existing_product.price})",
+            )
+        except Exception:
+            pass
 
         return existing_product
 
@@ -62,8 +66,8 @@ def create_product(
         title=clean_title,
         description=product.description,
         price=product.price,
-        stock=product.stock,
-        merchant_id=product.merchant_id,
+        stock=product.stock if product.stock is not None else 10,
+        merchant_id=m_id,
         category_id=product.category_id,
     )
 
@@ -71,13 +75,16 @@ def create_product(
     db.commit()
     db.refresh(db_product)
 
-    create_audit_event(
-        db=db,
-        event_type=Events.PRODUCT_CREATED,
-        entity_type="PRODUCT",
-        entity_id=db_product.id,
-        description=f"Product '{db_product.title}' created with price ₹{db_product.price} and stock {db_product.stock}",
-    )
+    try:
+        create_audit_event(
+            db=db,
+            event_type=Events.PRODUCT_CREATED,
+            entity_type="PRODUCT",
+            entity_id=db_product.id,
+            description=f"Product '{db_product.title}' created with price ₹{db_product.price} and stock {db_product.stock}",
+        )
+    except Exception:
+        pass
 
     return db_product
 

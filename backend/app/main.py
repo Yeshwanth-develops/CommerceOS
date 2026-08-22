@@ -62,6 +62,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    print(f"[!] Unhandled error on {request.url}: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": str(exc)},
+        headers={"Access-Control-Allow-Origin": "*"}
+    )
+
 app.include_router(product_router)
 app.include_router(order_router)
 app.include_router(payment_router)
