@@ -4,7 +4,9 @@ import app.models
 from app.db.database import engine
 from app.db.database import Base
 
-Base.metadata.create_all(bind=engine)
+@app.on_event("startup")
+def startup():
+    Base.metadata.create_all(bind=engine)
 
 
 from app.api.product import router as product_router
@@ -28,12 +30,8 @@ app = FastAPI(
 # Enable CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "*",
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -53,4 +51,10 @@ app.include_router(assistant_router)
 def root():
     return {
         "message": "ARGOS Running"
+    }
+
+@app.get("/health")
+def health():
+    return {
+        "status": "healthy"
     }
