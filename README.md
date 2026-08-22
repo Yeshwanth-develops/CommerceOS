@@ -424,7 +424,7 @@ Monitor Revenue Growth
 ---
 
 
-## 🏆 ARGOS Delivers
+## ARGOS Delivers
 
 * ✅ **AI Growth Intelligence**
 * ✅ **Agent-Driven Commerce**
@@ -437,10 +437,10 @@ Monitor Revenue Growth
 
 ## Vision
 
-> **ARGOS is building the future of autonomous retail — where AI doesn't just recommend actions, but helps merchants execute, optimize, and grow revenue in a transparent and trustworthy way.** 🚀
+> **ARGOS is building the future of autonomous retail — where AI doesn't just recommend actions, but helps merchants execute, optimize, and grow revenue in a transparent and trustworthy way.**
 
 ---
 
 ### Tagline
 
-**"ARGOS – The Autonomous Operating System for Revenue Growth."** 🔥
+**"ARGOS – The Autonomous Operating System for Revenue Growth."**
