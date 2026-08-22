@@ -19,12 +19,14 @@ class Product(Base):
 
     merchant_id = Column(
         Integer,
-        ForeignKey("merchants.id")
+        ForeignKey("merchants.id"),
+        nullable=True
     )
 
     category_id = Column(
         Integer,
-        ForeignKey("categories.id")
+        ForeignKey("categories.id"),
+        nullable=True
     )
 
     merchant = relationship(

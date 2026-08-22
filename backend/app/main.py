@@ -11,9 +11,17 @@ async def lifespan(fastapi_app: FastAPI):
     # Automatically create tables on startup
     Base.metadata.create_all(bind=engine)
     try:
+        from app.models.merchant import Merchant
         from app.models.product import Product
         from app.db.database import SessionLocal
         db = SessionLocal()
+        # Guarantee default merchant #1 exists in PostgreSQL
+        m = db.query(Merchant).filter(Merchant.id == 1).first()
+        if not m:
+            m = Merchant(id=1, name="Apex Retail Technologies", email="founder@apexretail.io")
+            db.add(m)
+            db.commit()
+
         count = db.query(Product).count()
         if count == 0:
             print("[*] Empty database detected. Seeding initial demo catalog...")
@@ -21,7 +29,7 @@ async def lifespan(fastapi_app: FastAPI):
             seed_demo_data()
         db.close()
     except Exception as e:
-        print(f"[!] Auto-seed notice: {e}")
+        print(f"[!] Startup initialization notice: {e}")
     yield
 
 
@@ -47,12 +55,8 @@ from app.api.assistant import router as assistant_router
 # Enable CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://argos-commerceos.vercel.app",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "*",
-    ],
+    allow_origins=["*"],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
