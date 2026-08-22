@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { buyProduct } from "@/lib/checkout";
 import API_URL from "@/lib/api";
+import PaymentModal, { PaymentSuccessData } from "@/components/PaymentModal";
+import { useToast } from "@/components/Toast";
 
 declare global {
     interface Window {
@@ -26,17 +28,20 @@ export default function BuyButton({
     onPaymentSuccess,
 }: Props) {
     const [loading, setLoading] = useState(false);
+    const [successModalData, setSuccessModalData] = useState<PaymentSuccessData | null>(null);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+    const { showToast } = useToast();
 
     const isOutOfStock = stock <= 0;
 
     const handleBuy = async () => {
         if (isOutOfStock) {
-            alert("This item is currently out of stock.");
+            showToast("Out of Stock", "This product is currently out of stock.", "warning");
             return;
         }
 
         if (typeof window === "undefined" || !window.Razorpay) {
-            alert("Razorpay checkout is loading. Please try again in a few seconds.");
+            showToast("Initializing Gateway", "Loading secure Razorpay checkout...", "info");
             return;
         }
 
@@ -52,11 +57,11 @@ export default function BuyButton({
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_TSRpCbrCZNWuP2",
                 amount: Math.round(order.amount * 100),
                 currency: "INR",
-                name: "ARGOS",
+                name: "ARGOS Commerce OS",
                 description: title,
                 order_id: order.razorpay_order_id,
                 theme: {
-                    color: "#000000",
+                    color: "#09090b",
                 },
                 handler: async function (response: any) {
                     try {
@@ -75,16 +80,23 @@ export default function BuyButton({
                         const result = await verifyResponse.json();
 
                         if (result.success) {
-                            alert("Payment Verified");
+                            setSuccessModalData({
+                                title,
+                                amount: order.amount,
+                                paymentId: response.razorpay_payment_id,
+                                orderId: response.razorpay_order_id,
+                            });
+                            setIsSuccessModalOpen(true);
+                            showToast("Payment Verified!", `Captured ₹${order.amount.toLocaleString()} for ${title}`, "success");
                             if (onPaymentSuccess) {
                                 onPaymentSuccess();
                             }
                         } else {
-                            alert("Payment verification failed");
+                            showToast("Verification Failed", "Payment could not be verified by backend.", "error");
                         }
                     } catch (verifyErr: any) {
                         console.error("Verification error:", verifyErr);
-                        alert(`Verification request failed: ${verifyErr.message}`);
+                        showToast("Verification Error", verifyErr.message || "Failed to confirm payment signature.", "error");
                     }
                 },
                 modal: {
@@ -97,41 +109,50 @@ export default function BuyButton({
             const razorpay = new window.Razorpay(options);
             razorpay.on("payment.failed", function (response: any) {
                 console.error("Payment Failed:", response.error);
-                alert(`Payment Failed: ${response.error.description || "Transaction failed"}`);
+                showToast("Payment Failed", response.error?.description || "Transaction was cancelled or declined.", "error");
             });
 
             razorpay.open();
         } catch (err: any) {
             console.error("Checkout error:", err);
-            alert(err.message || "Failed to initiate payment");
+            showToast("Checkout Error", err.message || "Failed to initiate payment.", "error");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <button
-            onClick={handleBuy}
-            disabled={loading || isOutOfStock}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center justify-center gap-1.5 shrink-0 cursor-pointer shadow-xs ${
-                isOutOfStock
-                    ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed border border-zinc-200 dark:border-zinc-700"
-                    : "bg-zinc-900 text-white hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 active:scale-95"
-            } disabled:opacity-60`}
-        >
-            {loading ? (
-                <>
-                    <span className="animate-spin text-xs">🔄</span>
-                    <span>Opening...</span>
-                </>
-            ) : isOutOfStock ? (
-                "Out of Stock"
-            ) : (
-                <>
-                    <span>Buy Now</span>
-                    <span>⚡</span>
-                </>
-            )}
-        </button>
+        <>
+            <button
+                onClick={handleBuy}
+                disabled={loading || isOutOfStock}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150 flex items-center justify-center gap-1.5 shrink-0 cursor-pointer shadow-xs ${
+                    isOutOfStock
+                        ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed border border-zinc-200 dark:border-zinc-700"
+                        : "bg-zinc-900 text-white hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 active:scale-95"
+                } disabled:opacity-60`}
+            >
+                {loading ? (
+                    <>
+                        <span className="animate-spin text-xs">🔄</span>
+                        <span>Opening...</span>
+                    </>
+                ) : isOutOfStock ? (
+                    "Out of Stock"
+                ) : (
+                    <>
+                        <span>Buy Now</span>
+                        <span>⚡</span>
+                    </>
+                )}
+            </button>
+
+            {/* High-End Payment Success Receipt Modal */}
+            <PaymentModal
+                isOpen={isSuccessModalOpen}
+                onClose={() => setIsSuccessModalOpen(false)}
+                data={successModalData}
+            />
+        </>
     );
 }

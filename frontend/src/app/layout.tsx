@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   description: "Autonomous commerce operating system with AI growth copilot, automated campaigns, cross-sell bundling, and real-time ledger telemetry.",
 };
 
+import { ToastProvider } from "@/components/Toast";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,18 +35,20 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <Navbar />
+        <ToastProvider>
+          <Navbar />
 
-        <main className="flex-1">{children}</main>
+          <main className="flex-1">{children}</main>
 
-        <Footer />
+          <Footer />
 
-        <FloatingAssistant />
+          <FloatingAssistant />
 
-        <Script
-          src="https://checkout.razorpay.com/v1/checkout.js"
-          strategy="lazyOnload"
-        />
+          <Script
+            src="https://checkout.razorpay.com/v1/checkout.js"
+            strategy="lazyOnload"
+          />
+        </ToastProvider>
       </body>
     </html>
   );

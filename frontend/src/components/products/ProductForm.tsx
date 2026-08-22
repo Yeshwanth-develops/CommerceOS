@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import API_URL from "@/lib/api";
+import { useToast } from "@/components/Toast";
 
 export default function ProductForm({
     onProductCreated,
@@ -13,10 +14,11 @@ export default function ProductForm({
     const [price, setPrice] = useState("");
     const [stock, setStock] = useState("");
     const [loading, setLoading] = useState(false);
+    const { showToast } = useToast();
 
     const createProduct = async () => {
         if (!title.trim() || !price || !stock) {
-            alert("Please fill in title, price, and stock");
+            showToast("Missing Fields", "Please enter product title, price, and initial stock.", "warning");
             return;
         }
 
@@ -41,7 +43,11 @@ export default function ProductForm({
             }
 
             const data = await res.json();
-            alert(`✅ Success: '${data.title}' saved/restocked! Current total stock: ${data.stock}`);
+            showToast(
+                "Product Saved!",
+                `'${data.title}' is active in catalog with total stock of ${data.stock} units.`,
+                "success"
+            );
 
             setTitle("");
             setDescription("");
@@ -53,7 +59,7 @@ export default function ProductForm({
             }
         } catch (error) {
             console.error("Error saving product:", error);
-            alert("Error saving product. Please check backend server.");
+            showToast("Catalog Error", "Failed to save product. Please check backend connection.", "error");
         } finally {
             setLoading(false);
         }
