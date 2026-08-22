@@ -1,12 +1,23 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import app.models
 from app.db.database import engine
 from app.db.database import Base
 
-@app.on_event("startup")
-def startup():
+
+@asynccontextmanager
+async def lifespan(fastapi_app: FastAPI):
+    # Automatically create tables on startup
     Base.metadata.create_all(bind=engine)
+    yield
+
+
+app = FastAPI(
+    title="ARGOS API",
+    version="1.0.0",
+    lifespan=lifespan,
+)
 
 
 from app.api.product import router as product_router
@@ -19,13 +30,6 @@ from app.api.campaign import router as campaign_router
 from app.api.bundle import router as bundle_router
 from app.api.agent_actions import router as agent_actions_router
 from app.api.assistant import router as assistant_router
-
-
-
-app = FastAPI(
-    title="ARGOS API",
-    version="1.0.0",
-)
 
 # Enable CORS for frontend communication
 app.add_middleware(
