@@ -40,6 +40,11 @@ const NAV_GROUPS: { groupName: string; items: NavItem[] }[] = [
 export default function Navbar() {
     const pathname = usePathname();
 
+    // Do not show navbar on home landing page
+    if (pathname === "/") {
+        return null;
+    }
+
     return (
         <header className="sticky top-0 z-50 w-full border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md transition-colors">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
