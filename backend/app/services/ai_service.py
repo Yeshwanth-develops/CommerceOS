@@ -146,11 +146,10 @@ Respond ONLY with a valid JSON object in this exact schema without any markdown 
 }}
 """
 
-    if model and api_key and len(products) >= 2:
+    if api_key and len(products) >= 2:
         try:
-            response = model.generate_content(prompt)
-            if response and response.text:
-                text = response.text.strip()
+            text = generate_gemini_text(prompt)
+            if text:
                 # Clean codeblock fences if present
                 if text.startswith("```"):
                     text = re.sub(r"^```(?:json)?\s*", "", text)
@@ -253,13 +252,9 @@ INSTRUCTIONS:
 5. Keep your tone professional, authoritative, and data-driven. Do NOT repeat a generic 4-part boilerplate unless explicitly asked for a full overview.
 """
 
-    if model and api_key:
-        try:
-            response = model.generate_content(prompt)
-            if response and response.text:
-                return response.text.strip()
-        except Exception as e:
-            print("Gemini Assistant call notice:", e)
+    res = generate_gemini_text(prompt)
+    if res:
+        return res
 
     # --- Dynamic Contextual Heuristic Reasoning Engine ---
     q_lower = query.lower()
