@@ -2,10 +2,10 @@
 nixPkgs = ["python311"]
 
 [phases.install]
-cmds = ["pip install -r backend/requirements.txt || pip install -r requirements.txt"]
+cmds = ["([ -f backend/requirements.txt ] && pip install -r backend/requirements.txt) || pip install -r requirements.txt"]
 
 [phases.build]
 cmds = ["echo 'Python Backend build ready'"]
 
 [start]
-cmd = "cd backend && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
+cmd = "sh -c \"([ -d backend ] && cd backend); uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}\""
