@@ -13,11 +13,20 @@ def create_product(
 ) -> Product:
     clean_title = product.title.strip()
 
+    # Ensure Merchant exists to satisfy foreign key constraint
+    from app.models.merchant import Merchant
+    m_id = product.merchant_id or 1
+    merchant = db.query(Merchant).filter(Merchant.id == m_id).first()
+    if not merchant:
+        merchant = Merchant(id=m_id, name="Apex Retail Technologies", email="founder@apexretail.io")
+        db.add(merchant)
+        db.commit()
+
     # Check if a product with the same title already exists for this merchant (case-insensitive)
     existing_product = (
         db.query(Product)
         .filter(
-            Product.merchant_id == product.merchant_id,
+            Product.merchant_id == m_id,
             func.lower(Product.title) == func.lower(clean_title)
         )
         .first()
