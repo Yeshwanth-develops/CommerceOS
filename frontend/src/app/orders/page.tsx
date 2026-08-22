@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { formatISTDateTime } from "@/lib/dateUtils";
+import API_URL from "@/lib/api";
 
 interface Order {
     id: number;
@@ -23,8 +24,7 @@ export default function OrdersPage() {
     const fetchOrders = useCallback(async () => {
         try {
             setLoading(true);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/orders/`);
+            const res = await fetch(`${API_URL}/orders/`);
             if (!res.ok) throw new Error("Failed to fetch orders");
             const data = await res.json();
             setOrders(data);

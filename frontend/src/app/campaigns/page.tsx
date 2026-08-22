@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import API_URL from "@/lib/api";
 
 interface Campaign {
     id: number;
@@ -26,8 +27,7 @@ export default function CampaignsPage() {
     const fetchCampaigns = useCallback(async () => {
         try {
             setLoading(true);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/campaigns/`);
+            const res = await fetch(`${API_URL}/campaigns/`);
             if (res.ok) {
                 const data = await res.json();
                 setCampaigns(data);
@@ -47,8 +47,7 @@ export default function CampaignsPage() {
         try {
             setGenerating(true);
             setError(null);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/campaigns/generate`, {
+            const res = await fetch(`${API_URL}/campaigns/generate`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
             });
@@ -69,8 +68,7 @@ export default function CampaignsPage() {
     const handleExecuteCampaign = async (id: number) => {
         try {
             setUpdatingId(id);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/campaigns/${id}/execute`, {
+            const res = await fetch(`${API_URL}/campaigns/${id}/execute`, {
                 method: "POST",
             });
             if (!res.ok) throw new Error("Failed to execute campaign");
@@ -95,8 +93,7 @@ export default function CampaignsPage() {
     const handleUpdateStatus = async (id: number, newStatus: string) => {
         try {
             setUpdatingId(id);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/campaigns/${id}/status`, {
+            const res = await fetch(`${API_URL}/campaigns/${id}/status`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status: newStatus }),

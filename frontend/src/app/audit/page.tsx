@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { formatISTDateTime } from "@/lib/dateUtils";
+import API_URL from "@/lib/api";
 
 interface AuditLog {
     id: number;
@@ -28,8 +29,7 @@ export default function AuditPage() {
             } else {
                 setLoading(true);
             }
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/audit/?_t=${Date.now()}`, {
+            const res = await fetch(`${API_URL}/audit/?_t=${Date.now()}`, {
                 cache: "no-store",
             });
             if (!res.ok) throw new Error("Failed to fetch audit logs");

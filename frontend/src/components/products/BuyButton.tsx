@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { buyProduct } from "@/lib/checkout";
+import API_URL from "@/lib/api";
 
 declare global {
     interface Window {
@@ -59,8 +60,7 @@ export default function BuyButton({
                 },
                 handler: async function (response: any) {
                     try {
-                        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-                        const verifyResponse = await fetch(`${baseUrl}/payments/verify`, {
+                        const verifyResponse = await fetch(`${API_URL}/payments/verify`, {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",

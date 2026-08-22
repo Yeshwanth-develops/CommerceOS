@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
+import API_URL from "@/lib/api";
 
 interface GrowthInsights {
     growth_score: number;
@@ -144,8 +145,7 @@ export default function GrowthPage() {
     const fetchInsights = useCallback(async () => {
         try {
             setLoading(true);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/growth/`);
+            const res = await fetch(`${API_URL}/growth/`);
             if (!res.ok) throw new Error("Failed to fetch growth insights");
             const data = await res.json();
             setInsights(data);
@@ -159,8 +159,7 @@ export default function GrowthPage() {
 
     const fetchLatestCampaign = useCallback(async () => {
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/campaigns/latest`);
+            const res = await fetch(`${API_URL}/campaigns/latest`);
             if (res.ok) {
                 const data = await res.json();
                 if (data) {
@@ -174,8 +173,7 @@ export default function GrowthPage() {
 
     const fetchLatestBundle = useCallback(async () => {
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/bundles/latest`);
+            const res = await fetch(`${API_URL}/bundles/latest`);
             if (res.ok) {
                 const data = await res.json();
                 if (data) {
@@ -202,8 +200,7 @@ export default function GrowthPage() {
         try {
             setGeneratingCampaign(true);
             setCampaignError(null);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/campaigns/generate`, {
+            const res = await fetch(`${API_URL}/campaigns/generate`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -227,8 +224,7 @@ export default function GrowthPage() {
         if (!campaign?.id) return;
         try {
             setUpdatingCampaignStatus(true);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/campaigns/${campaign.id}/status`, {
+            const res = await fetch(`${API_URL}/campaigns/${campaign.id}/status`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -253,8 +249,7 @@ export default function GrowthPage() {
         try {
             setGeneratingBundle(true);
             setBundleError(null);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/bundles/generate`, {
+            const res = await fetch(`${API_URL}/bundles/generate`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -278,8 +273,7 @@ export default function GrowthPage() {
         if (!bundle?.id) return;
         try {
             setUpdatingBundleStatus(true);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/bundles/${bundle.id}/status`, {
+            const res = await fetch(`${API_URL}/bundles/${bundle.id}/status`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

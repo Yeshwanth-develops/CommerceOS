@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import API_URL from "@/lib/api";
 
 interface Bundle {
     id: number;
@@ -27,8 +28,7 @@ export default function BundlesPage() {
     const fetchBundles = useCallback(async () => {
         try {
             setLoading(true);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/bundles/`);
+            const res = await fetch(`${API_URL}/bundles/`);
             if (res.ok) {
                 const data = await res.json();
                 setBundles(data);
@@ -48,8 +48,7 @@ export default function BundlesPage() {
         try {
             setGenerating(true);
             setError(null);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/bundles/generate`, {
+            const res = await fetch(`${API_URL}/bundles/generate`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
             });
@@ -70,8 +69,7 @@ export default function BundlesPage() {
     const handleExecuteBundle = async (id: number) => {
         try {
             setUpdatingId(id);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/bundles/${id}/execute`, {
+            const res = await fetch(`${API_URL}/bundles/${id}/execute`, {
                 method: "POST",
             });
             if (!res.ok) throw new Error("Failed to execute bundle");
@@ -96,8 +94,7 @@ export default function BundlesPage() {
     const handleUpdateStatus = async (id: number, newStatus: string) => {
         try {
             setUpdatingId(id);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/bundles/${id}/status`, {
+            const res = await fetch(`${API_URL}/bundles/${id}/status`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status: newStatus }),

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import RevenueChart from "@/components/dashboard/RevenueChart";
+import API_URL from "@/lib/api";
 
 interface DashboardStats {
     revenueGenerated: number;
@@ -32,14 +33,13 @@ export default function Dashboard() {
         const fetchDashboardData = async () => {
             try {
                 setLoading(true);
-                const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
                 const [cRes, bRes, aRes, gRes, oRes, audRes] = await Promise.all([
-                    fetch(`${baseUrl}/campaigns/`).catch(() => null),
-                    fetch(`${baseUrl}/bundles/`).catch(() => null),
-                    fetch(`${baseUrl}/agent-actions/`).catch(() => null),
-                    fetch(`${baseUrl}/growth/`).catch(() => null),
-                    fetch(`${baseUrl}/orders/`).catch(() => null),
-                    fetch(`${baseUrl}/audit/`).catch(() => null),
+                    fetch(`${API_URL}/campaigns/`).catch(() => null),
+                    fetch(`${API_URL}/bundles/`).catch(() => null),
+                    fetch(`${API_URL}/agent-actions/`).catch(() => null),
+                    fetch(`${API_URL}/growth/`).catch(() => null),
+                    fetch(`${API_URL}/orders/`).catch(() => null),
+                    fetch(`${API_URL}/audit/`).catch(() => null),
                 ]);
 
                 let campaignsCount = 10;

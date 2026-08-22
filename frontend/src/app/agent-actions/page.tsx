@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { formatISTDateTime, formatISTTimeOnly } from "@/lib/dateUtils";
+import API_URL from "@/lib/api";
 
 interface AgentAction {
     id: number;
@@ -30,8 +31,7 @@ export default function AgentActionsPage() {
             } else {
                 setLoading(true);
             }
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/agent-actions/?_t=${Date.now()}`, {
+            const res = await fetch(`${API_URL}/agent-actions/?_t=${Date.now()}`, {
                 cache: "no-store",
             });
             if (!res.ok) throw new Error("Failed to fetch agent actions");

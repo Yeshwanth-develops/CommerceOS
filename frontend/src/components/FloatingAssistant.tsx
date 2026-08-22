@@ -3,6 +3,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import API_URL from "@/lib/api";
 
 interface PlanExecutionResult {
     status: string;
@@ -210,8 +211,7 @@ export default function FloatingAssistant() {
         setLoading(true);
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/assistant/chat`, {
+            const res = await fetch(`${API_URL}/assistant/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ query: text }),
@@ -248,8 +248,7 @@ export default function FloatingAssistant() {
     const handleExecutePlan = async () => {
         setExecutingPlan(true);
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/assistant/execute-plan`, {
+            const res = await fetch(`${API_URL}/assistant/execute-plan`, {
                 method: "POST",
             });
 

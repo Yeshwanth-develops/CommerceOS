@@ -1,10 +1,11 @@
+import API_URL from "@/lib/api";
+
 export async function buyProduct(
     productId: number,
     merchantId: number,
     quantity: number = 1
 ) {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-    const response = await fetch(`${baseUrl}/orders/`, {
+    const response = await fetch(`${API_URL}/orders/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -29,8 +30,7 @@ export async function verifyPayment(
     razorpayPaymentId: string,
     razorpaySignature: string
 ) {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-    const response = await fetch(`${baseUrl}/payments/verify`, {
+    const response = await fetch(`${API_URL}/payments/verify`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

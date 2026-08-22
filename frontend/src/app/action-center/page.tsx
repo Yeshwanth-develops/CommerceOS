@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
+import API_URL from "@/lib/api";
 
 interface Campaign {
     id: number;
@@ -46,10 +47,9 @@ export default function ActionCenterPage() {
             } else {
                 setLoading(true);
             }
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
             const [cRes, bRes] = await Promise.all([
-                fetch(`${baseUrl}/campaigns/?_t=${Date.now()}`, { cache: "no-store" }),
-                fetch(`${baseUrl}/bundles/?_t=${Date.now()}`, { cache: "no-store" }),
+                fetch(`${API_URL}/campaigns/?_t=${Date.now()}`, { cache: "no-store" }),
+                fetch(`${API_URL}/bundles/?_t=${Date.now()}`, { cache: "no-store" }),
             ]);
             if (cRes.ok) setCampaigns(await cRes.json());
             if (bRes.ok) setBundles(await bRes.json());
@@ -72,8 +72,7 @@ export default function ActionCenterPage() {
     const handleExecuteCampaign = async (id: number) => {
         try {
             setExecutingCampaignId(id);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/campaigns/${id}/execute`, {
+            const res = await fetch(`${API_URL}/campaigns/${id}/execute`, {
                 method: "POST",
             });
             if (!res.ok) throw new Error("Failed to execute campaign");
@@ -97,8 +96,7 @@ export default function ActionCenterPage() {
     const handleExecuteBundle = async (id: number) => {
         try {
             setExecutingBundleId(id);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/bundles/${id}/execute`, {
+            const res = await fetch(`${API_URL}/bundles/${id}/execute`, {
                 method: "POST",
             });
             if (!res.ok) throw new Error("Failed to execute bundle");

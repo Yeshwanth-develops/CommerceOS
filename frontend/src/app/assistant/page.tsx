@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
+import API_URL from "@/lib/api";
 
 interface PlanExecutionResult {
     status: string;
@@ -133,8 +134,7 @@ export default function AssistantPage() {
             setError(null);
             setExecutionResult(null);
 
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/assistant/chat`, {
+            const res = await fetch(`${API_URL}/assistant/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ query: q }),
@@ -161,8 +161,7 @@ export default function AssistantPage() {
             setExecutingPlan(true);
             setError(null);
 
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/assistant/execute-plan`, {
+            const res = await fetch(`${API_URL}/assistant/execute-plan`, {
                 method: "POST",
             });
 

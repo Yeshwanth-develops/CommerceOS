@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import BuyButton from "@/components/products/BuyButton";
+import API_URL from "@/lib/api";
 
 export interface Product {
     id: number;
@@ -35,10 +36,9 @@ export default function ProductsPage() {
     const fetchProducts = useCallback(async (query: string = "") => {
         try {
             setLoading(true);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
             const url = query
-                ? `${baseUrl}/products/?search=${encodeURIComponent(query)}`
-                : `${baseUrl}/products/`;
+                ? `${API_URL}/products/?search=${encodeURIComponent(query)}`
+                : `${API_URL}/products/`;
             const res = await fetch(url);
             if (!res.ok) throw new Error("Failed to fetch products");
             const data = await res.json();
@@ -64,8 +64,7 @@ export default function ProductsPage() {
         try {
             setFormSubmitting(true);
             setFormMessage(null);
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-            const res = await fetch(`${baseUrl}/products/`, {
+            const res = await fetch(`${API_URL}/products/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
