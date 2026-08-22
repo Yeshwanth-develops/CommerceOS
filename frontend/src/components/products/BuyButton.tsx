@@ -49,7 +49,7 @@ export default function BuyButton({
             }
 
             const options = {
-                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_TSRpCbrCZNWuP2",
                 amount: Math.round(order.amount * 100),
                 currency: "INR",
                 name: "ARGOS",
