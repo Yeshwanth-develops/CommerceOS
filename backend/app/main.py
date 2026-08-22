@@ -36,8 +36,11 @@ from app.api.assistant import router as assistant_router
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-    "https://argos-commerceos.vercel.app/"
-],
+        "https://argos-commerceos.vercel.app",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "*",
+    ],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
