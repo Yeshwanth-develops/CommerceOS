@@ -50,6 +50,7 @@ def generate_growth_insights(
         revenue=total_revenue,
         orders=total_orders,
         products=product_titles,
+        growth_score=growth_score,
     )
 
     # Record Audit Trail Event
@@ -60,6 +61,16 @@ def generate_growth_insights(
         entity_id=None,
         description=f"Generated growth report: Score {growth_score}/100, Revenue ₹{total_revenue:,.2f}, {len(recommendations)} actionable recommendations",
     )
+
+    # Record Agent Action Execution
+    from app.services.agent_action_service import create_agent_action
+    create_agent_action(
+        db=db,
+        action_type="GROWTH_ANALYSIS",
+        action_name=f"Growth Analysis (Score: {growth_score}/100)",
+        source_agent="Growth Copilot"
+    )
+
 
     return {
         "growth_score": growth_score,

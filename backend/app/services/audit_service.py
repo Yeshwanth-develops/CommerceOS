@@ -21,3 +21,22 @@ def create_audit_event(
     db.commit()
 
     return event
+
+
+def create_audit_log(
+    db: Session,
+    event_type: str,
+    entity: str,
+    description: str
+):
+    event = AuditLog(
+        event_type=event_type,
+        entity_type=entity,
+        entity_id=None,
+        description=description
+    )
+
+    db.add(event)
+    db.commit()
+
+    return event

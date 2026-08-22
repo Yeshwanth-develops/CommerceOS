@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import app.models
+from app.db.database import engine
+from app.db.base import Base
+
+Base.metadata.create_all(bind=engine)
+
 
 from app.api.product import router as product_router
 from app.api.order import router as order_router
@@ -8,6 +13,11 @@ from app.api.payment import router as payment_router
 from app.api.webhook import router as webhook_router
 from app.api.audit import router as audit_router
 from app.api.growth import router as growth_router
+from app.api.campaign import router as campaign_router
+from app.api.bundle import router as bundle_router
+from app.api.agent_actions import router as agent_actions_router
+
+
 
 app = FastAPI(
     title="CommerceOS API",
@@ -33,7 +43,9 @@ app.include_router(payment_router)
 app.include_router(webhook_router)
 app.include_router(audit_router)
 app.include_router(growth_router)
-
+app.include_router(campaign_router)
+app.include_router(bundle_router)
+app.include_router(agent_actions_router)
 
 @app.get("/")
 def root():

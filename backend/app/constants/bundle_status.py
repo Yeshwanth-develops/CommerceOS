@@ -1,0 +1,6 @@
+class BundleStatus:
+    DRAFT = "DRAFT"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+
+    ALL = [DRAFT, APPROVED, REJECTED]
