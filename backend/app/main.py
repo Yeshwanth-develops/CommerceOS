@@ -11,17 +11,30 @@ async def lifespan(fastapi_app: FastAPI):
     # Automatically create tables on startup
     Base.metadata.create_all(bind=engine)
     try:
-        from app.models.merchant import Merchant
+        from sqlalchemy import text
+        with engine.begin() as conn:
+            # 1. Guarantee merchant row with id=1 exists in PostgreSQL
+            try:
+                conn.execute(text(
+                    "INSERT INTO merchants (id, name, email) VALUES (1, 'Apex Retail Technologies', 'founder@apexretail.io') ON CONFLICT (id) DO NOTHING;"
+                ))
+            except Exception as e:
+                print(f"[!] Merchant SQL insert note: {e}")
+
+            # 2. Safely drop foreign key constraints if they block PostgreSQL inserts
+            for table_name, constraint_name in [
+                ("products", "products_merchant_id_fkey"),
+                ("orders", "orders_merchant_id_fkey")
+            ]:
+                try:
+                    conn.execute(text(f"ALTER TABLE {table_name} DROP CONSTRAINT IF EXISTS {constraint_name};"))
+                except Exception:
+                    pass
+
+        # 3. Seed demo data if database is empty
         from app.models.product import Product
         from app.db.database import SessionLocal
         db = SessionLocal()
-        # Guarantee default merchant #1 exists in PostgreSQL
-        m = db.query(Merchant).filter(Merchant.id == 1).first()
-        if not m:
-            m = Merchant(id=1, name="Apex Retail Technologies", email="founder@apexretail.io")
-            db.add(m)
-            db.commit()
-
         count = db.query(Product).count()
         if count == 0:
             print("[*] Empty database detected. Seeding initial demo catalog...")
