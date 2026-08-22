@@ -11,16 +11,23 @@ api_key = (
     os.getenv("GOOGLE_API_KEY", "").strip()
 )
 
-model = None
-if api_key:
+def generate_gemini_text(prompt: str) -> Optional[str]:
+    if not api_key:
+        return None
     try:
         import google.generativeai as genai
         genai.configure(api_key=api_key)
-        # Use standard flash model
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        for model_name in ["gemini-1.5-flash-latest", "gemini-1.5-flash", "gemini-2.0-flash", "gemini-pro"]:
+            try:
+                m = genai.GenerativeModel(model_name)
+                res = m.generate_content(prompt)
+                if res and res.text:
+                    return res.text.strip()
+            except Exception:
+                continue
     except Exception as e:
-        print("Gemini model initialization notice:", e)
-        model = None
+        print("Gemini call notice:", e)
+    return None
 
 
 def get_ai_recommendations(
@@ -65,13 +72,9 @@ Formatting:
 - No loose '---' lines.
 """
 
-    if model and api_key:
-        try:
-            response = model.generate_content(prompt)
-            if response and response.text:
-                return response.text.strip()
-        except Exception as e:
-            print("Gemini API call failed, using enhanced analytical advisor:", e)
+    gemini_res = generate_gemini_text(prompt)
+    if gemini_res:
+        return gemini_res
 
     # Merchant-Friendly Analytical Reasoning Engine
     p1 = product_objs[0]['title'] if len(product_objs) > 0 else "HP Pavilion Gaming Laptop"
